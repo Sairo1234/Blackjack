@@ -20,6 +20,8 @@ public class Deck : MonoBehaviour
     public string[] names = new string[52];
 
     public List<GameObject> InitialDeck = new List<GameObject>();
+    public List<GameObject> RandomDeck = new List<GameObject>();
+
     private void Awake()
     {
         InitCardValues();
@@ -44,7 +46,7 @@ public class Deck : MonoBehaviour
         int[] valuesSuit = new int[13];
         int valuesSuitIndex = 0;
 
-        //Cada carta tiene el valor de su número y las especiales valen 10
+        //Cada card tiene el valor de su número y las especiales valen 10
         for (int i = 1; i < valuesSuit.Length; i++)
         {
             if (i < 10)
@@ -90,6 +92,26 @@ public class Deck : MonoBehaviour
          * El método Random.Range(0,n), devuelve un valor entre 0 y n-1
          * Si lo necesitas, puedes definir nuevos arrays.
          */
+
+        //Borro la baraja para crear una nueva
+        RandomDeck.Clear();
+
+        //Añado todas las cartas de la primera baraja a la nueva
+        foreach (GameObject card in InitialDeck)
+        {
+            RandomDeck.Add(card);
+        }
+
+        //Las desordeno todas
+        for (int i = 51; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+
+            GameObject swap = RandomDeck[i];
+            RandomDeck[i] = RandomDeck[j];
+            RandomDeck[j] = swap;
+        }
+
     }
 
     void StartGame()
