@@ -32,7 +32,9 @@ public class Deck : MonoBehaviour
     {
         ShuffleCards();
         StartGame();
+
     }
+    
 
     private void InitCardValues()
     {
@@ -123,6 +125,18 @@ public class Deck : MonoBehaviour
             /*TODO:
              * Si alguno de los dos obtiene Blackjack, termina el juego y mostramos mensaje
              */
+            if (dealer.GetComponent<CardHand>().points == 21 && player.GetComponent<CardHand>().points == 21)
+            {
+                Tie();
+            }
+            else if (player.GetComponent<CardHand>().points == 21)
+            {
+                Win();
+            }
+            else if(dealer.GetComponent<CardHand>().points == 21)
+            {
+                Loose();
+            }
         }
     }
 
@@ -196,4 +210,20 @@ public class Deck : MonoBehaviour
         StartGame();
     }
 
+    public void Win()
+    {
+        finalMessage.color = Color.green;
+        finalMessage.text = "Win";
+    }
+    public void Loose()
+    {
+        finalMessage.color = Color.red;
+        finalMessage.text = "Loose";
+    }
+    public void Tie()
+    {
+        finalMessage.color = Color.yellow;
+        finalMessage.text = "Tie";
+
+    }
 }
