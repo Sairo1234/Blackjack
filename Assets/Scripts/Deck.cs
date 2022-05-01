@@ -155,7 +155,8 @@ public class Deck : MonoBehaviour
         /*TODO:
          * Dependiendo de cómo se implemente ShuffleCards, es posible que haya que cambiar el índice.
          */
-        dealer.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]);
+        dealer.GetComponent<CardHand>().Push(RandomDeck[cardIndex].GetComponent<CardModel>().front,
+            RandomDeck[cardIndex].GetComponent<CardModel>().value);
         cardIndex++;
     }
 
@@ -164,7 +165,8 @@ public class Deck : MonoBehaviour
         /*TODO:
          * Dependiendo de cómo se implemente ShuffleCards, es posible que haya que cambiar el índice.
          */
-        player.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]/*,cardCopy*/);
+        player.GetComponent<CardHand>().Push(RandomDeck[cardIndex].GetComponent<CardModel>().front,
+           RandomDeck[cardIndex].GetComponent<CardModel>().value);
         cardIndex++;
         CalculateProbabilities();
     }
