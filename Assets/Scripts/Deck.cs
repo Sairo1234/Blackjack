@@ -27,6 +27,7 @@ public class Deck : MonoBehaviour
 
     public List<GameObject> InitialDeck = new List<GameObject>();
     public List<GameObject> RandomDeck = new List<GameObject>();
+    public List<GameObject> ProbDeck = new List<GameObject>();
 
     private void Awake()
     {
@@ -124,6 +125,13 @@ public class Deck : MonoBehaviour
             RandomDeck[j] = swap;
         }
 
+        //Hago una baraja que se usará para calcular las probabilidades
+        foreach (GameObject card in RandomDeck)
+        {
+            ProbDeck.Add(card);
+        }
+        ProbDeck.Add(RandomDeck[1]);
+
     }
 
     void StartGame()
@@ -154,10 +162,68 @@ public class Deck : MonoBehaviour
     {
         /*TODO:
          * Calcular las probabilidades de:
-         * - Teniendo la card oculta, probabilidad de que el dealer tenga más puntuación que el jugador
-         * - Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una card
-         * - Probabilidad de que el jugador obtenga más de 21 si pide una card          
+         * - Teniendo la carta oculta, probabilidad de que el dealer tenga más puntuación que el jugador
+         * - Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta
+         * - Probabilidad de que el jugador obtenga más de 21 si pide una carta       
          */
+
+
+        //Primera probabilidad a calcular
+        double numberP1 = 0;
+        double Probability1 = 0;
+
+        foreach (GameObject card in ProbDeck)
+        {
+            if (card.GetComponent<CardModel>().value
+                + RandomDeck[3].gameObject.GetComponent<CardModel>().value
+                > player.gameObject.GetComponent<CardHand>().points)
+            {
+                numberP1++;
+            }
+            
+        }
+
+        Debug.Log(RandomDeck[3].gameObject.GetComponent<CardModel>().value);
+
+        Probability1 = (numberP1 / ProbDeck.Count) * 100;
+        probMessage.text = "Probabilidad de que el dealer tenga más puntuación que el jugador: " 
+            + string.Format("{0:0.00}", Probability1) + "% \n";
+
+
+        //Segunda probabilidad a calcular
+        double numberP2 = 0;
+        double Probability2 = 0;
+
+        foreach (GameObject card in ProbDeck)
+        {
+            if (card.GetComponent<CardModel>().value + player.gameObject.GetComponent<CardHand>().points <= 21
+                && card.GetComponent<CardModel>().value + player.gameObject.GetComponent<CardHand>().points >= 17)
+            {
+                numberP2++;
+            }
+        }
+
+        Probability2 = (numberP2 / ProbDeck.Count) * 100;
+        probMessage.text += "Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta: " 
+            + string.Format("{0:0.00}", Probability2) + "% \n";
+
+
+        //Tercera probabilidad a calcular
+        double numberP3 = 0;
+        double Probability3 = 0;
+
+        foreach (GameObject card in ProbDeck)
+        {
+            if (card.GetComponent<CardModel>().value + player.gameObject.GetComponent<CardHand>().points > 21)
+            {
+                numberP3++;
+            }
+        }
+
+        Probability3 = (numberP3 / ProbDeck.Count) * 100;
+        probMessage.text += "Probabilidad de que el jugador obtenga más de 21 si pide una carta: " 
+            + string.Format("{0:0.00}", Probability3) + "%";
+
     }
 
     void PushDealer()
@@ -168,6 +234,8 @@ public class Deck : MonoBehaviour
         dealer.GetComponent<CardHand>().Push(RandomDeck[cardIndex].GetComponent<CardModel>().front,
             RandomDeck[cardIndex].GetComponent<CardModel>().value);
         cardIndex++;
+
+        ProbDeck.Remove(RandomDeck[cardIndex]);
     }
 
     void PushPlayer()
@@ -178,6 +246,8 @@ public class Deck : MonoBehaviour
         player.GetComponent<CardHand>().Push(RandomDeck[cardIndex].GetComponent<CardModel>().front,
            RandomDeck[cardIndex].GetComponent<CardModel>().value);
         cardIndex++;
+
+        ProbDeck.Remove(RandomDeck[cardIndex]);
         CalculateProbabilities();
     }
 
@@ -239,11 +309,13 @@ public class Deck : MonoBehaviour
     {
         DealerPoints.text = "?";
         dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(false);
+
         ActivateButtons();
 
         finalMessage.text = "";
         player.GetComponent<CardHand>().Clear();
         dealer.GetComponent<CardHand>().Clear();
+        ProbDeck.Clear();
         cardIndex = 0;
         ShuffleCards();
         StartGame();
