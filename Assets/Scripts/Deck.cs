@@ -237,20 +237,23 @@ public class Deck : MonoBehaviour
 
     public void PlayAgain()
     {
-        hitButton.interactable = true;
-        stickButton.interactable = true;
+        DealerPoints.text = "?";
+        dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(false);
+        ActivateButtons();
+
         finalMessage.text = "";
         player.GetComponent<CardHand>().Clear();
         dealer.GetComponent<CardHand>().Clear();
         cardIndex = 0;
         ShuffleCards();
         StartGame();
-        DealerPoints.text = "?";
-        dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(false);
+
     }
 
     public void Win()
     {
+        DeactivateButtons();
+
         finalMessage.color = Color.green;
         finalMessage.text = "Win";
 
@@ -259,6 +262,8 @@ public class Deck : MonoBehaviour
     }
     public void Loose()
     {
+        DeactivateButtons();
+
         finalMessage.color = Color.red;
         finalMessage.text = "Loose";
 
@@ -267,6 +272,8 @@ public class Deck : MonoBehaviour
     }
     public void Tie()
     {
+        DeactivateButtons();
+
         finalMessage.color = Color.yellow;
         finalMessage.text = "Tie";
 
@@ -275,4 +282,14 @@ public class Deck : MonoBehaviour
 
     }
 
+    public void ActivateButtons()
+    {
+        hitButton.interactable = true;
+        stickButton.interactable = true;
+    }
+    public void DeactivateButtons()
+    {
+        hitButton.interactable = false;
+        stickButton.interactable = false;
+    }
 }
