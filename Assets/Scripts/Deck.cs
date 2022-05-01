@@ -5,13 +5,19 @@ using System.Collections.Generic;
 public class Deck : MonoBehaviour
 {
     public Sprite[] faces;
+
     public GameObject dealer;
     public GameObject player;
+
     public Button hitButton;
     public Button stickButton;
     public Button playAgainButton;
+
     public Text finalMessage;
     public Text probMessage;
+
+    public Text PlayerPoints;
+    public Text DealerPoints;
 
     public int[] values = new int[52];
     int cardIndex = 0;
@@ -34,7 +40,11 @@ public class Deck : MonoBehaviour
         StartGame();
 
     }
-    
+
+    private void Update()
+    {
+        PlayerPoints.text = player.GetComponent<CardHand>().points.ToString();
+    }
 
     private void InitCardValues()
     {
@@ -133,7 +143,7 @@ public class Deck : MonoBehaviour
             {
                 Win();
             }
-            else if(dealer.GetComponent<CardHand>().points == 21)
+            else if (dealer.GetComponent<CardHand>().points == 21)
             {
                 Loose();
             }
@@ -179,11 +189,11 @@ public class Deck : MonoBehaviour
         /*TODO:
          * Comprobamos si el jugador ya ha perdido y mostramos mensaje
          */
-        if(player.GetComponent<CardHand>().points > 21)
+        if (player.GetComponent<CardHand>().points > 21)
         {
             Loose();
         }
-        else if(player.GetComponent<CardHand>().points == 21)
+        else if (player.GetComponent<CardHand>().points == 21)
         {
             Win();
         }
@@ -195,12 +205,33 @@ public class Deck : MonoBehaviour
         /*TODO: 
          * Si estamos en la mano inicial, debemos voltear la primera card del dealer.
          */
+        dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
 
         /*TODO:
          * Repartimos cartas al dealer si tiene 16 puntos o menos
          * El dealer se planta al obtener 17 puntos o más
          * Mostramos el mensaje del que ha ganado
          */
+        while (dealer.GetComponent<CardHand>().points < 17)
+        {
+            PushDealer();
+        }
+        if (dealer.GetComponent<CardHand>().points == player.GetComponent<CardHand>().points)
+        {
+            Tie();
+        }
+        else if (dealer.GetComponent<CardHand>().points > 21)
+        {
+            Win();
+        }
+        else if (player.GetComponent<CardHand>().points > dealer.GetComponent<CardHand>().points)
+        {
+            Win();
+        }
+        else if (player.GetComponent<CardHand>().points < dealer.GetComponent<CardHand>().points)
+        {
+            Loose();
+        }
 
     }
 
@@ -214,22 +245,34 @@ public class Deck : MonoBehaviour
         cardIndex = 0;
         ShuffleCards();
         StartGame();
+        DealerPoints.text = "?";
+        dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(false);
     }
 
     public void Win()
     {
         finalMessage.color = Color.green;
         finalMessage.text = "Win";
+
+        DealerPoints.text = dealer.GetComponent<CardHand>().points.ToString();
+        dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
     }
     public void Loose()
     {
         finalMessage.color = Color.red;
         finalMessage.text = "Loose";
+
+        DealerPoints.text = dealer.GetComponent<CardHand>().points.ToString();
+        dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
     }
     public void Tie()
     {
         finalMessage.color = Color.yellow;
         finalMessage.text = "Tie";
 
+        DealerPoints.text = dealer.GetComponent<CardHand>().points.ToString();
+        dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+
     }
+
 }
