@@ -151,7 +151,7 @@ public class Deck : MonoBehaviour
             }
             else if (dealer.GetComponent<CardHand>().points == 21)
             {
-                Loose();
+                Lose();
             }
         }
     }
@@ -259,7 +259,7 @@ public class Deck : MonoBehaviour
          */
         if (player.GetComponent<CardHand>().points > 21)
         {
-            Loose();
+            Lose();
         }
         else if (player.GetComponent<CardHand>().points == 21)
         {
@@ -298,7 +298,7 @@ public class Deck : MonoBehaviour
         }
         else if (player.GetComponent<CardHand>().points < dealer.GetComponent<CardHand>().points)
         {
-            Loose();
+            Lose();
         }
 
     }
@@ -330,12 +330,12 @@ public class Deck : MonoBehaviour
 
         this.gameObject.GetComponent<Bets>().winBet();
     }
-    public void Loose()
+    public void Lose()
     {
         DeactivateButtons();
 
         finalMessage.color = Color.red;
-        finalMessage.text = "Loose";
+        finalMessage.text = "Lose";
 
         DealerPoints.text = dealer.GetComponent<CardHand>().points.ToString();
         dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
