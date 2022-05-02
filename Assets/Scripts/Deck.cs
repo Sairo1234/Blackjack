@@ -37,9 +37,7 @@ public class Deck : MonoBehaviour
 
     private void Start()
     {
-        ShuffleCards();
-        StartGame();
-
+        DeactivateButtons();
     }
 
     private void Update()
@@ -98,7 +96,7 @@ public class Deck : MonoBehaviour
         }
     }
 
-    private void ShuffleCards()
+    public void ShuffleCards()
     {
         /*TODO:
          * Barajar las cartas aleatoriamente.
@@ -134,7 +132,7 @@ public class Deck : MonoBehaviour
 
     }
 
-    void StartGame()
+    public void StartGame()
     {
         for (int i = 0; i < 2; i++)
         {
@@ -180,13 +178,13 @@ public class Deck : MonoBehaviour
             {
                 numberP1++;
             }
-            
+
         }
 
         Debug.Log(RandomDeck[3].gameObject.GetComponent<CardModel>().value);
 
         Probability1 = (numberP1 / ProbDeck.Count) * 100;
-        probMessage.text = "Probabilidad de que el dealer tenga más puntuación que el jugador: " 
+        probMessage.text = "Probabilidad de que el dealer tenga más puntuación que el jugador: "
             + string.Format("{0:0.00}", Probability1) + "% \n";
 
 
@@ -204,7 +202,7 @@ public class Deck : MonoBehaviour
         }
 
         Probability2 = (numberP2 / ProbDeck.Count) * 100;
-        probMessage.text += "Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta: " 
+        probMessage.text += "Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta: "
             + string.Format("{0:0.00}", Probability2) + "% \n";
 
 
@@ -221,7 +219,7 @@ public class Deck : MonoBehaviour
         }
 
         Probability3 = (numberP3 / ProbDeck.Count) * 100;
-        probMessage.text += "Probabilidad de que el jugador obtenga más de 21 si pide una carta: " 
+        probMessage.text += "Probabilidad de que el jugador obtenga más de 21 si pide una carta: "
             + string.Format("{0:0.00}", Probability3) + "%";
 
     }
@@ -308,17 +306,15 @@ public class Deck : MonoBehaviour
     public void PlayAgain()
     {
         DealerPoints.text = "?";
-        dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(false);
-
-        ActivateButtons();
-
         finalMessage.text = "";
         player.GetComponent<CardHand>().Clear();
         dealer.GetComponent<CardHand>().Clear();
         ProbDeck.Clear();
         cardIndex = 0;
-        ShuffleCards();
-        StartGame();
+
+        DeactivateButtons();
+        this.gameObject.GetComponent<Bets>().ButtonsTrue();
+
 
     }
 
@@ -331,6 +327,8 @@ public class Deck : MonoBehaviour
 
         DealerPoints.text = dealer.GetComponent<CardHand>().points.ToString();
         dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+
+        this.gameObject.GetComponent<Bets>().winBet();
     }
     public void Loose()
     {
@@ -341,6 +339,8 @@ public class Deck : MonoBehaviour
 
         DealerPoints.text = dealer.GetComponent<CardHand>().points.ToString();
         dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+
+        this.gameObject.GetComponent<Bets>().looseBet();
     }
     public void Tie()
     {
@@ -351,6 +351,8 @@ public class Deck : MonoBehaviour
 
         DealerPoints.text = dealer.GetComponent<CardHand>().points.ToString();
         dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+
+        this.gameObject.GetComponent<Bets>().tieBet();
 
     }
 
